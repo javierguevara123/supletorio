@@ -1,21 +1,21 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:s1_listatareas/models/tarea.dart';
+import 'package:supletorio/models/producto.dart';
 
 class ApiService {
-  final String baseUrl = "http://10.0.2.2:7176";
+  final String baseUrl = "https://10.0.2.2:7176";
 
   String? _token;
 
   Future<bool> login(String usuario, String password) async {
-    final url = Uri.parse("$baseUrl/api/Login");
+    final url = Uri.parse("$baseUrl/user/Login");
 
     try {
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
-          "username": usuario, // Ajusta según lo que pida tu API
+          "email": usuario, // Ajusta según lo que pida tu API
           "password": password,
         }),
       );
@@ -23,7 +23,7 @@ class ApiService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         // Asumimos que la API devuelve algo como { "token": "eyJh..." }
-        _token = data['token'];
+        _token = data['accessToken'];
         return true;
       } else {
         print("Error login: ${response.statusCode}");
@@ -38,7 +38,7 @@ class ApiService {
   Map<String, String> _getHeaders() {
     return {
       "Content-Type": "application/json",
-      "Authorization": "Bearer $_token", // Aquí se inyecta el token
+      "Authorization": "Bearer $_token",
     };
   }
 
@@ -47,13 +47,19 @@ class ApiService {
   Future<List<Producto>> getProductos() async {
     if (_token == null) throw Exception('No hay token. Inicia sesión primero.');
 
-    final respuesta = await http.get(Uri.parse("$baseUrl/api/products"));
+    final url = Uri.parse("$baseUrl/api/products?PageNumber=1&PageSize=100&OrderDescending=true");
+
+    final respuesta = await http.get(
+      url,
+      headers: _getHeaders(),
+    );
 
     if (respuesta.statusCode == 200) {
-      List<dynamic> body = jsonDecode(respuesta.body);
-      return body.map((e) => Producto.fromJson(e)).toList();
+      final Map<String, dynamic> respuestaJson = jsonDecode(respuesta.body);
+      final List<dynamic> listaItems = respuestaJson['items']; 
+      return listaItems.map((e) => Producto.fromJson(e)).toList();
     } else {
-      throw Exception('Error cargando productos: ${respuesta.statusCode}');
+      throw Exception('Error: ${respuesta.statusCode} - ${respuesta.body}');
     }
   }
 

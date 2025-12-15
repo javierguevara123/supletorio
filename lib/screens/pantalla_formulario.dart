@@ -44,7 +44,7 @@ class _PantallaFormularioState extends State<PantallaFormulario> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.producto == null ? 'Nueva Producto' : 'Editar Producto',
+          widget.producto == null ? 'Nuevo Producto' : 'Editar Producto',
         ),
       ),
       body: Padding(
@@ -65,7 +65,7 @@ class _PantallaFormularioState extends State<PantallaFormulario> {
             ),
             const SizedBox(height: 10),
             TextField(
-              controller: _stockController,
+              controller: _priceController,
               decoration: const InputDecoration(labelText: 'Precio Unitario'),
               keyboardType: TextInputType.numberWithOptions(decimal: true),
             ),
