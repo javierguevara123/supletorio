@@ -1,56 +1,73 @@
 import 'package:flutter/material.dart';
-import 'package:supletorio/models/tarea.dart';
+import 'package:s1_listatareas/models/tarea.dart';
 
 class PantallaFormulario extends StatefulWidget {
-  final Tarea? tarea;
-  const PantallaFormulario({super.key, this.tarea});
+  final Producto? producto;
+  const PantallaFormulario({super.key, this.producto});
 
   @override
   State<PantallaFormulario> createState() => _PantallaFormularioState();
 }
 
 class _PantallaFormularioState extends State<PantallaFormulario> {
-  final _tituloController = TextEditingController();
-  final _descripcionController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _stockController = TextEditingController();
+  final _priceController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    if (widget.tarea != null) {
-      _tituloController.text = widget.tarea!.titulo;
-      _descripcionController.text = widget.tarea!.descripcion;
+    if (widget.producto != null) {
+      _nameController.text = widget.producto!.name;
+      _stockController.text = widget.producto!.unitsInStock.toString();
+      _priceController.text = widget.producto!.unitPrice.toString();
     }
   }
 
   void _guardar() {
-    if (_tituloController.text.isEmpty) return;
-    final nuevaTarea = Tarea(
-      id: widget.tarea?.id ?? DateTime.now().toString(),
-      titulo: _tituloController.text,
-      descripcion: _descripcionController.text,
+    if (_nameController.text.isEmpty ||
+        _stockController.text.isEmpty ||
+        _priceController.text.isEmpty)
+      return;
+    final nuevoProducto = Producto(
+      id: widget.producto?.id ?? 0,
+      name: _nameController.text,
+      unitsInStock: int.parse(_stockController.text),
+      unitPrice: double.parse(_priceController.text),
     );
 
-    Navigator.pop(context, nuevaTarea);
+    Navigator.pop(context, nuevoProducto);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.tarea == null ? 'Nueva Tarea' : 'Editar Tarea'),
+        title: Text(
+          widget.producto == null ? 'Nueva Producto' : 'Editar Producto',
+        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
-              controller: _tituloController,
-              decoration: const InputDecoration(labelText: 'Titulo'),
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: 'Nombre del Producto',
+              ),
             ),
             const SizedBox(height: 10),
             TextField(
-              controller: _descripcionController,
-              decoration: const InputDecoration(labelText: 'Descripcion'),
+              controller: _stockController,
+              decoration: const InputDecoration(labelText: 'Unidades (Stock)'),
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _stockController,
+              decoration: const InputDecoration(labelText: 'Precio Unitario'),
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
             ),
             const SizedBox(height: 20),
             ElevatedButton(onPressed: _guardar, child: const Text('Guardar')),
