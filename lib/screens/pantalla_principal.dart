@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:s1_listatareas/models/tarea.dart';
-import 'package:s1_listatareas/screens/pantalla_formulario.dart';
-import 'package:s1_listatareas/services/api_service.dart';
+import 'package:supletorio/models/producto.dart';
+import 'package:supletorio/screens/pantalla_formulario.dart';
+import 'package:supletorio/services/api_service.dart';
 
 class PantallaPrincipal extends StatefulWidget {
   const PantallaPrincipal({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:s1_listatareas/models/tarea.dart';
+import 'package:supletorio/models/producto.dart';
 
 class PantallaFormulario extends StatefulWidget {
   final Producto? producto;
